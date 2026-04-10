@@ -216,7 +216,7 @@ def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
     lines.append("Full details are in the attached Excel file.")
     body = "\n".join(lines)
     msg            = MIMEMultipart()
-   msg["From"]    = BREVO_LOGIN 
+    msg["From"]    = BREVO_LOGIN
     msg["To"]      = EMAIL_TO
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))

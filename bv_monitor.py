@@ -196,7 +196,6 @@ def build_excel(on_df: pd.DataFrame, off_df: pd.DataFrame) -> Path:
 def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
     today   = datetime.date.today().strftime("%d %B %Y")
     subject = f"Bona Vacantia List Update — {today}"
-
     lines = [
         f"BV Unclaimed Estates list changes detected — {today}.",
         "",
@@ -204,40 +203,33 @@ def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
         f"  ❌  REMOVED entries (OFF list): {len(off_df)}",
         "",
     ]
-
     if not on_df.empty and 'Surname' in on_df.columns:
         lines.append("New entries (ON):")
         for _, r in on_df.iterrows():
             lines.append(f"  + {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
         lines.append("")
-
     if not off_df.empty and 'Surname' in off_df.columns:
         lines.append("Removed entries (OFF):")
         for _, r in off_df.iterrows():
             lines.append(f"  - {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
         lines.append("")
-
     lines.append("Full details are in the attached Excel file.")
     body = "\n".join(lines)
-
     msg            = MIMEMultipart()
     msg["From"]    = GMAIL_SENDER
     msg["To"]      = EMAIL_TO
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
-
     with open(xlsx_path, "rb") as f:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(f.read())
     encoders.encode_base64(part)
     part.add_header("Content-Disposition", f"attachment; filename={xlsx_path.name}")
     msg.attach(part)
-
-with smtplib.SMTP("smtp-relay.brevo.com", 587) as server:
-    server.starttls()
-    server.login(BREVO_LOGIN, BREVO_PASS)
-    server.sendmail(GMAIL_SENDER, EMAIL_TO, msg.as_string())
-
+    with smtplib.SMTP("smtp-relay.brevo.com", 587) as server:
+        server.starttls()
+        server.login(BREVO_LOGIN, BREVO_PASS)
+        server.sendmail(GMAIL_SENDER, EMAIL_TO, msg.as_string())
     log(f"Email sent to {EMAIL_TO}")
 
 # ─────────────────────────────────────────────────────────────

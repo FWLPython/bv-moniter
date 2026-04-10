@@ -21,11 +21,14 @@ jobs:
       - name: Install dependencies
         run: pip install requests pandas openpyxl
 
-      - name: Run BV Monitor
+    
+         - name: Run BV Monitor
         env:
           GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
           GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          BREVO_LOGIN: ${{ secrets.BREVO_LOGIN }}
+          BREVO_PASS: ${{ secrets.BREVO_PASS }}
         run: python bv_monitor.py
 
       - name: Save updated list

@@ -33,7 +33,7 @@ GMAIL_SENDER   = os.environ.get("GMAIL_SENDER",    "bvlistdaemon@gmail.com")
 GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASS",  "")
 EMAIL_TO       = os.environ.get("EMAIL_TO",       "admin@family-wise.co.uk")
 BREVO_LOGIN = os.environ.get("BREVO_LOGIN", "a7ba5c001@smtp-brevo.com")
-BREVO_PASS  = os.environ.get("BREVO_PASS",  "xsmtpsib-93405495137054d3ee5548fdbf1772ec1decd841eeb2245f0906df1982b351c3-grxRB3EJMPMZ6B0T")
+BREVO_PASS  = os.environ.get("BREVO_PASS",  "xsmtpsib-93405495137054d3ee5548fdbf1772ec1decd841eeb2245f0906df1982b351c3-GqFnI39x6fUGycRV")
 
 SCRIPT_DIR      = Path(__file__).parent
 SAVED_LIST_PATH = SCRIPT_DIR / "bv_saved_list.csv"

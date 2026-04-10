@@ -32,6 +32,8 @@ from email import encoders
 GMAIL_SENDER   = os.environ.get("GMAIL_SENDER",    "bvlistdaemon@gmail.com")
 GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASS",  "")
 EMAIL_TO       = os.environ.get("EMAIL_TO",       "admin@family-wise.co.uk")
+BREVO_LOGIN = os.environ.get("BREVO_LOGIN", "")
+BREVO_PASS  = os.environ.get("BREVO_PASS",  "")
 
 SCRIPT_DIR      = Path(__file__).parent
 SAVED_LIST_PATH = SCRIPT_DIR / "bv_saved_list.csv"
@@ -231,9 +233,10 @@ def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
     part.add_header("Content-Disposition", f"attachment; filename={xlsx_path.name}")
     msg.attach(part)
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(GMAIL_SENDER, GMAIL_APP_PASS)
-        server.sendmail(GMAIL_SENDER, EMAIL_TO, msg.as_string())
+with smtplib.SMTP("smtp-relay.brevo.com", 587) as server:
+    server.starttls()
+    server.login(BREVO_LOGIN, BREVO_PASS)
+    server.sendmail(GMAIL_SENDER, EMAIL_TO, msg.as_string())
 
     log(f"Email sent to {EMAIL_TO}")
 

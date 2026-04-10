@@ -216,7 +216,7 @@ def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
     lines.append("Full details are in the attached Excel file.")
     body = "\n".join(lines)
     msg            = MIMEMultipart()
-    msg["From"]    = GMAIL_SENDER
+   msg["From"]    = BREVO_LOGIN 
     msg["To"]      = EMAIL_TO
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
@@ -229,7 +229,7 @@ def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
     with smtplib.SMTP("smtp-relay.brevo.com", 587) as server:
         server.starttls()
         server.login(BREVO_LOGIN, BREVO_PASS)
-        server.sendmail(GMAIL_SENDER, EMAIL_TO, msg.as_string())
+        server.sendmail(BREVO_LOGIN, EMAIL_TO, msg.as_string())
     log(f"Email sent to {EMAIL_TO}")
 
 # ─────────────────────────────────────────────────────────────

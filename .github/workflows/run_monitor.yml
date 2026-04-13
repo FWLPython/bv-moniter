@@ -1,4 +1,4 @@
-name: BV Monitor
+name: BV List Monitor
 
 on:
   schedule:
@@ -26,6 +26,40 @@ jobs:
 
       - name: Run BV monitor
         run: python bv_monitor.py
+
+      - name: Check if changes were found
+        id: check_changes
+        run: |
+          if git diff --name-only | grep -q "CHANGES_FOUND.md"; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          elif git status --short | grep -q "CHANGES_FOUND.md"; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Read changes file
+        id: read_changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          CONTENT=$(cat CHANGES_FOUND.md)
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send email via Gmail
+        if: steps.check_changes.outputs.changes == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.GMAIL_SENDER }}
+          password: ${{ secrets.GMAIL_APP_PASS }}
+          subject: "🔔 BV List Changes Detected — ${{ github.run_started_at }}"
+          to: admin@family-wise.co.uk
+          from: BV Monitor <${{ secrets.GMAIL_SENDER }}>
+          body: ${{ steps.read_changes.outputs.content }}
 
       - name: Commit and push any changes
         run: |

@@ -30,7 +30,7 @@ from email import encoders
 # ─────────────────────────────────────────────────────────────
 
 GMAIL_SENDER   = os.environ.get("GMAIL_SENDER",   "bvlistdaemon@gmail.com")
-GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASS", "iinjdbkmfmkntvxl")
+GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASS", "krbcnnzhpbhdbboq")
 EMAIL_TO       = os.environ.get("EMAIL_TO",       "admin@family-wise.co.uk")
 
 SCRIPT_DIR      = Path(__file__).parent

@@ -1,41 +1,22 @@
 """
-Bona Vacantia List Monitor — GitHub Actions version
-=====================================================
-Runs every hour via GitHub Actions (free, cloud-based, no PC needed).
-Downloads the latest BV Unclaimed Estates list from gov.uk, compares it
-to the previously saved version, and emails a styled ON/OFF Excel report
-to admin@family-wise.co.uk — but ONLY if something changed.
+Bona Vacantia List Monitor — GitHub Notifications version
+==========================================================
+No email sending. When changes are found, this script saves a
+CHANGES_FOUND.md file to the repo. GitHub's own notification
+system then emails you automatically when the file is updated.
 
-Credentials are stored as GitHub Secrets (not in this file).
+Zero authentication issues. Zero SMTP. Just works.
 """
 
-import os
 import re
-import smtplib
 import datetime
 import requests
 import pandas as pd
 from pathlib import Path
-from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.utils import get_column_letter
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
-
-# ─────────────────────────────────────────────────────────────
-#  CONFIGURATION
-#  Credentials come from GitHub Secrets — nothing to edit here
-# ─────────────────────────────────────────────────────────────
-
-GMAIL_SENDER   = os.environ.get("GMAIL_SENDER",   "bvlistdaemon@gmail.com")
-GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASS", "krbcnnzhpbhdbboq")
-EMAIL_TO       = os.environ.get("EMAIL_TO",       "admin@family-wise.co.uk")
 
 SCRIPT_DIR      = Path(__file__).parent
 SAVED_LIST_PATH = SCRIPT_DIR / "bv_saved_list.csv"
-OUTPUT_XLSX     = SCRIPT_DIR / "BV_Changes.xlsx"
+CHANGES_FILE    = SCRIPT_DIR / "CHANGES_FOUND.md"
 LOG_FILE        = SCRIPT_DIR / "bv_monitor.log"
 
 BV_PAGE_URL = "https://www.gov.uk/government/statistical-data-sets/unclaimed-estates-list"
@@ -66,10 +47,7 @@ def find_download_url() -> str:
     )
 
     if not urls:
-        raise RuntimeError(
-            "Could not find a download link on the BV page. "
-            "The page layout may have changed."
-        )
+        raise RuntimeError("Could not find a download link on the BV page.")
 
     return urls[0]
 
@@ -121,120 +99,53 @@ def compare(old_df: pd.DataFrame, new_df: pd.DataFrame):
     return on_df, off_df
 
 # ─────────────────────────────────────────────────────────────
-#  STEP 3 — Build styled Excel report
+#  STEP 3 — Write changes to CHANGES_FOUND.md
+#  GitHub will email you when this file is committed
 # ─────────────────────────────────────────────────────────────
 
-def style_sheet(ws, df, title, header_color, tab_color):
-    ws.title = title
-    ws.sheet_properties.tabColor = tab_color
-
-    preferred = ['BV Reference', 'Forename', 'Surname', 'Date of Death', 'Place of Death']
-    cols = [c for c in preferred if c in df.columns] or list(df.columns)
-
-    col_widths = {
-        'BV Reference': 18, 'Forename': 15, 'Surname': 20,
-        'Date of Death': 16, 'Place of Death': 35
-    }
-
-    thin        = Side(style='thin', color='CCCCCC')
-    border      = Border(left=thin, right=thin, top=thin, bottom=thin)
-    header_fill = PatternFill('solid', start_color=header_color)
-
-    ws.merge_cells(f'A1:{get_column_letter(len(cols))}1')
-    ws['A1'] = title
-    ws['A1'].font      = Font(name='Arial', bold=True, size=13, color='FFFFFF')
-    ws['A1'].fill      = header_fill
-    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
-    ws.row_dimensions[1].height = 22
-
-    ws.merge_cells(f'A2:{get_column_letter(len(cols))}2')
-    ws['A2'] = f'Total entries: {len(df)}'
-    ws['A2'].font      = Font(name='Arial', italic=True, size=10, color='555555')
-    ws['A2'].alignment = Alignment(horizontal='center')
-    ws.row_dimensions[2].height = 16
-
-    for ci, col in enumerate(cols, 1):
-        cell = ws.cell(row=3, column=ci, value=col)
-        cell.font      = Font(name='Arial', bold=True, size=10, color='FFFFFF')
-        cell.fill      = header_fill
-        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-        cell.border    = border
-        ws.column_dimensions[get_column_letter(ci)].width = col_widths.get(col, 20)
-    ws.row_dimensions[3].height = 18
-
-    for ri, (_, row) in enumerate(df[cols].iterrows(), 4):
-        fill_color = 'F9F9F9' if ri % 2 == 0 else 'FFFFFF'
-        for ci, col in enumerate(cols, 1):
-            val = row[col]
-            if hasattr(val, 'strftime'):
-                val = val.strftime('%d/%m/%Y')
-            cell = ws.cell(row=ri, column=ci, value=val)
-            cell.font      = Font(name='Arial', size=10)
-            cell.fill      = PatternFill('solid', start_color=fill_color)
-            cell.border    = border
-            cell.alignment = Alignment(vertical='center')
-
-    ws.freeze_panes = 'A4'
-
-
-def build_excel(on_df: pd.DataFrame, off_df: pd.DataFrame) -> Path:
-    wb = Workbook()
-    ws1 = wb.active
-    style_sheet(ws1, on_df,  'ON List (New Entries)',      '2E7D32', '00AA00')
-    ws2 = wb.create_sheet()
-    style_sheet(ws2, off_df, 'OFF List (Removed Entries)', 'B71C1C', 'CC0000')
-    wb.save(OUTPUT_XLSX)
-    return OUTPUT_XLSX
-
-# ─────────────────────────────────────────────────────────────
-#  STEP 4 — Send email
-# ─────────────────────────────────────────────────────────────
-
-def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
-    today   = datetime.date.today().strftime("%d %B %Y")
-    subject = f"Bona Vacantia List Update — {today}"
+def write_changes_file(on_df: pd.DataFrame, off_df: pd.DataFrame):
+    now = datetime.datetime.now().strftime("%d %B %Y at %H:%M")
 
     lines = [
-        f"BV Unclaimed Estates list changes detected — {today}.",
+        f"# BV List Changes — {now}",
         "",
-        f"  ✅  NEW entries (ON list):      {len(on_df)}",
-        f"  ❌  REMOVED entries (OFF list): {len(off_df)}",
+        f"**✅ NEW entries (ON): {len(on_df)}**",
+        f"**❌ REMOVED entries (OFF): {len(off_df)}**",
         "",
     ]
 
-    if not on_df.empty and 'Surname' in on_df.columns:
-        lines.append("New entries (ON):")
+    if not on_df.empty:
+        lines.append("## New Entries (ON)")
+        lines.append("| BV Reference | Forename | Surname | Date of Death | Place of Death |")
+        lines.append("|---|---|---|---|---|")
         for _, r in on_df.iterrows():
-            lines.append(f"  + {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
+            lines.append(
+                f"| {r.get('BV Reference','')} "
+                f"| {r.get('Forename','')} "
+                f"| {r.get('Surname','')} "
+                f"| {r.get('Date of Death','')} "
+                f"| {r.get('Place of Death','')} |"
+            )
         lines.append("")
 
-    if not off_df.empty and 'Surname' in off_df.columns:
-        lines.append("Removed entries (OFF):")
+    if not off_df.empty:
+        lines.append("## Removed Entries (OFF)")
+        lines.append("| BV Reference | Forename | Surname | Date of Death | Place of Death |")
+        lines.append("|---|---|---|---|---|")
         for _, r in off_df.iterrows():
-            lines.append(f"  - {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
+            lines.append(
+                f"| {r.get('BV Reference','')} "
+                f"| {r.get('Forename','')} "
+                f"| {r.get('Surname','')} "
+                f"| {r.get('Date of Death','')} "
+                f"| {r.get('Place of Death','')} |"
+            )
         lines.append("")
 
-    lines.append("Full details are in the attached Excel file.")
-    body = "\n".join(lines)
+    with open(CHANGES_FILE, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
 
-    msg            = MIMEMultipart()
-    msg["From"]    = GMAIL_SENDER
-    msg["To"]      = EMAIL_TO
-    msg["Subject"] = subject
-    msg.attach(MIMEText(body, "plain"))
-
-    with open(xlsx_path, "rb") as f:
-        part = MIMEBase("application", "octet-stream")
-        part.set_payload(f.read())
-    encoders.encode_base64(part)
-    part.add_header("Content-Disposition", f"attachment; filename={xlsx_path.name}")
-    msg.attach(part)
-
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(GMAIL_SENDER, GMAIL_APP_PASS)
-        server.sendmail(GMAIL_SENDER, EMAIL_TO, msg.as_string())
-
-    log(f"Email sent to {EMAIL_TO}")
+    log(f"Changes written to {CHANGES_FILE.name}")
 
 # ─────────────────────────────────────────────────────────────
 #  MAIN
@@ -253,7 +164,7 @@ def main():
         old_df = load_saved_list()
 
         if old_df is None:
-            log("No saved list found — saving current list as baseline. No email sent.")
+            log("No saved list found — saving baseline. No changes recorded.")
             save_list(new_df)
             return
 
@@ -261,15 +172,12 @@ def main():
         log(f"Comparison done — ON: {len(on_df)}, OFF: {len(off_df)}")
 
         if on_df.empty and off_df.empty:
-            log("No changes detected. No email sent.")
+            log("No changes detected.")
             save_list(new_df)
             return
 
-        log("Changes found — building Excel report...")
-        xlsx = build_excel(on_df, off_df)
-
-        log("Sending email...")
-        send_email(on_df, off_df, xlsx)
+        log("Changes found — writing changes file...")
+        write_changes_file(on_df, off_df)
 
         save_list(new_df)
         log("All done ✅")
@@ -281,4 +189,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
 

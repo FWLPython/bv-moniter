@@ -1,43 +1,51 @@
 name: BV List Monitor
-
+ 
 on:
   schedule:
     - cron: '0 * * * *'  # Runs every hour on the hour
   workflow_dispatch:       # Run manually with a button any time
-
+    inputs:
+      force_test_email:
+        description: 'Send a test email regardless of changes? (yes/no)'
+        required: false
+        default: 'no'
+ 
 jobs:
   check-bv-list:
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-
+ 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
+ 
       - name: Install dependencies
         run: pip install requests pandas openpyxl
-
+ 
       - name: Run BV monitor
         run: python bv_monitor.py
-
+ 
       - name: Check if changes were found
         id: check_changes
         run: |
-          if git diff --name-only | grep -q "CHANGES_FOUND.md"; then
+          if [ "${{ github.event.inputs.force_test_email }}" == "yes" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "TEST EMAIL - No real changes detected, this is a test run." > CHANGES_FOUND.md
+          elif git diff --name-only | grep -q "CHANGES_FOUND.md"; then
             echo "changes=true" >> $GITHUB_OUTPUT
           elif git status --short | grep -q "CHANGES_FOUND.md"; then
             echo "changes=true" >> $GITHUB_OUTPUT
           else
             echo "changes=false" >> $GITHUB_OUTPUT
           fi
-
+ 
       - name: Read changes file
         id: read_changes
         if: steps.check_changes.outputs.changes == 'true'
@@ -46,7 +54,7 @@ jobs:
           echo "content<<EOF" >> $GITHUB_OUTPUT
           echo "$CONTENT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
+ 
       - name: Send email via Gmail
         if: steps.check_changes.outputs.changes == 'true'
         uses: dawidd6/action-send-mail@v3
@@ -60,7 +68,7 @@ jobs:
           to: admin@family-wise.co.uk
           from: BV Monitor <${{ secrets.GMAIL_SENDER }}>
           body: ${{ steps.read_changes.outputs.content }}
-
+ 
       - name: Commit and push any changes
         run: |
           git config user.name  "BV Monitor Bot"

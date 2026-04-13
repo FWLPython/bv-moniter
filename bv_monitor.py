@@ -38,7 +38,7 @@ SAVED_LIST_PATH = SCRIPT_DIR / "bv_saved_list.csv"
 OUTPUT_XLSX     = SCRIPT_DIR / "BV_Changes.xlsx"
 LOG_FILE        = SCRIPT_DIR / "bv_monitor.log"
 
-BV_PAGE_URL = "https://www.gov.uk/government/publications/bona-vacantia-unclaimed-estates-list"
+BV_PAGE_URL = "https://www.gov.uk/government/statistical-data-sets/unclaimed-estates-list"
 
 # ─────────────────────────────────────────────────────────────
 #  LOGGING

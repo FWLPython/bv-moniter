@@ -6,3 +6,9 @@
 [2026-04-13 11:29:35] Changes found — writing changes file...
 [2026-04-13 11:29:35] Changes written to CHANGES_FOUND.md
 [2026-04-13 11:29:35] All done ✅
+[2026-04-13 11:33:04] ── BV Monitor starting ──
+[2026-04-13 11:33:04] Finding download URL on gov.uk...
+[2026-04-13 11:33:05] Downloading: https://assets.publishing.service.gov.uk/media/69d8c14796c86b751317020b/UnclaimedEstatesList.csv
+[2026-04-13 11:33:06] Downloaded 5499 entries.
+[2026-04-13 11:33:06] Comparison done — ON: 0, OFF: 0
+[2026-04-13 11:33:06] No changes detected.

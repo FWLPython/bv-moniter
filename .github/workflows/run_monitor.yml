@@ -2,39 +2,35 @@ name: BV Monitor
 
 on:
   schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *'  # Runs every hour on the hour
+  workflow_dispatch:       # Run manually with a button any time
 
 jobs:
-  run:
+  check-bv-list:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: pip install requests pandas openpyxl
 
-      - name: Run BV Monitor
-        env:
-          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
-          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          BREVO_LOGIN: ${{ secrets.BREVO_LOGIN }}
-          BREVO_PASS: ${{ secrets.BREVO_PASS }}
+      - name: Run BV monitor
         run: python bv_monitor.py
 
-      - name: Save updated list
+      - name: Commit and push any changes
         run: |
-          git config user.name "github-actions"
+          git config user.name  "BV Monitor Bot"
           git config user.email "actions@github.com"
-          git pull --rebase
-          git add bv_saved_list.csv
-          git diff --staged --quiet || git commit -m "Update saved BV list"
+          git add bv_saved_list.csv CHANGES_FOUND.md bv_monitor.log || true
+          git diff --cached --quiet || git commit -m "🔔 BV List changes detected [$(date +'%Y-%m-%d %H:%M')]"
           git push

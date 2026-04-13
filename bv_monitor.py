@@ -29,19 +29,16 @@ from email import encoders
 #  Credentials come from GitHub Secrets — nothing to edit here
 # ─────────────────────────────────────────────────────────────
 
-GMAIL_SENDER   = os.environ.get("GMAIL_SENDER",    "bvlistdaemon@gmail.com")
-GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASS",  "")
+GMAIL_SENDER   = os.environ.get("GMAIL_SENDER",   "bvlistdaemon@gmail.com")
+GMAIL_APP_PASS = os.environ.get("GMAIL_APP_PASS", "iinjdbkmfmkntvxl")
 EMAIL_TO       = os.environ.get("EMAIL_TO",       "admin@family-wise.co.uk")
-BREVO_LOGIN = os.environ.get("BREVO_LOGIN", "a7ba5c001@smtp-brevo.com")
-BREVO_PASS  = os.environ.get("BREVO_PASS",  "xsmtpsib-93405495137054d3ee5548fdbf1772ec1decd841eeb2245f0906df1982b351c3-GqFnI39x6fUGycRV")
 
 SCRIPT_DIR      = Path(__file__).parent
 SAVED_LIST_PATH = SCRIPT_DIR / "bv_saved_list.csv"
 OUTPUT_XLSX     = SCRIPT_DIR / "BV_Changes.xlsx"
 LOG_FILE        = SCRIPT_DIR / "bv_monitor.log"
 
-
-BV_PAGE_URL = "https://www.gov.uk/government/statistical-data-sets/unclaimed-estates-list"
+BV_PAGE_URL = "https://www.gov.uk/government/publications/bona-vacantia-unclaimed-estates-list"
 
 # ─────────────────────────────────────────────────────────────
 #  LOGGING
@@ -196,6 +193,7 @@ def build_excel(on_df: pd.DataFrame, off_df: pd.DataFrame) -> Path:
 def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
     today   = datetime.date.today().strftime("%d %B %Y")
     subject = f"Bona Vacantia List Update — {today}"
+
     lines = [
         f"BV Unclaimed Estates list changes detected — {today}.",
         "",
@@ -203,33 +201,39 @@ def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
         f"  ❌  REMOVED entries (OFF list): {len(off_df)}",
         "",
     ]
+
     if not on_df.empty and 'Surname' in on_df.columns:
         lines.append("New entries (ON):")
         for _, r in on_df.iterrows():
             lines.append(f"  + {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
         lines.append("")
+
     if not off_df.empty and 'Surname' in off_df.columns:
         lines.append("Removed entries (OFF):")
         for _, r in off_df.iterrows():
             lines.append(f"  - {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
         lines.append("")
+
     lines.append("Full details are in the attached Excel file.")
     body = "\n".join(lines)
+
     msg            = MIMEMultipart()
-    msg["From"]    = BREVO_LOGIN
+    msg["From"]    = GMAIL_SENDER
     msg["To"]      = EMAIL_TO
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
+
     with open(xlsx_path, "rb") as f:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(f.read())
     encoders.encode_base64(part)
     part.add_header("Content-Disposition", f"attachment; filename={xlsx_path.name}")
     msg.attach(part)
-    with smtplib.SMTP("smtp-relay.brevo.com", 587) as server:
-        server.starttls()
-        server.login(BREVO_LOGIN, BREVO_PASS)
-        server.sendmail(BREVO_LOGIN, EMAIL_TO, msg.as_string())
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(GMAIL_SENDER, GMAIL_APP_PASS)
+        server.sendmail(GMAIL_SENDER, EMAIL_TO, msg.as_string())
+
     log(f"Email sent to {EMAIL_TO}")
 
 # ─────────────────────────────────────────────────────────────
@@ -277,3 +281,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

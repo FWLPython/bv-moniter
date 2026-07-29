@@ -40,8 +40,8 @@ SMTP_PORT_SSL = 465    # SSL
 SMTP_USERNAME = os.environ.get("SMTP2GO_USERNAME", "FamilyWiseBVLIST")
 SMTP_PASSWORD = os.environ.get("SMTP2GO_PASSWORD", "0LGj2guAb1rcYLPJ1skgMV55")
 
-EMAIL_FROM    = os.environ.get("BV_EMAIL_FROM", "bvlist@familywise.co.uk")
-EMAIL_TO      = os.environ.get("BV_EMAIL_TO", "bvlist@familywise.co.uk")  # comma-separate multiple recipients
+EMAIL_FROM    = os.environ.get("BV_EMAIL_FROM", "bv@family-wise.co.uk")
+EMAIL_TO      = os.environ.get("BV_EMAIL_TO", "admin@family-wise.co.uk")  # comma-separate multiple recipients
 EMAIL_SUBJECT_PREFIX = "Bona Vacantia List Update"
 
 # ─────────────────────────────────────────────────────────────

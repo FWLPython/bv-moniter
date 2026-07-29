@@ -84,3 +84,11 @@
 [2026-04-14 11:36:17] Downloaded 5499 entries.
 [2026-04-14 11:36:17] Comparison done — ON: 0, OFF: 0
 [2026-04-14 11:36:17] No changes detected.
+[2026-07-29 14:06:51] ── BV Monitor starting ──
+[2026-07-29 14:06:51] Finding download URL on gov.uk...
+[2026-07-29 14:06:52] Downloading: https://assets.publishing.service.gov.uk/media/6a689b2fa5debd9e92d5c29b/UnclaimedEstatesList.csv
+[2026-07-29 14:06:53] Downloaded 5487 entries.
+[2026-07-29 14:06:53] Comparison done — ON: 220, OFF: 232
+[2026-07-29 14:06:53] Changes found — building and sending email...
+[2026-07-29 14:06:55] Email sent to admin@family-wise.co.uk via SMTP2GO (SSL 465)
+[2026-07-29 14:06:55] All done ✅

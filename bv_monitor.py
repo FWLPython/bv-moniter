@@ -35,7 +35,7 @@ BV_PAGE_URL = "https://www.gov.uk/government/statistical-data-sets/unclaimed-est
  
 SMTP_HOST     = "mail.smtp2go.com"
 SMTP_PORT_TLS = 2525   # STARTTLS
-SMTP_PORT_SSL = 465    # SSL
+
  
 SMTP_USERNAME = os.environ.get("SMTP2GO_USERNAME", "FamilyWiseBVLIST")
 SMTP_PASSWORD = os.environ.get("SMTP2GO_PASSWORD", "0LGj2guAb1rcYLPJ1skgMV55")

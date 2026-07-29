@@ -128,32 +128,29 @@ def compare(old_df: pd.DataFrame, new_df: pd.DataFrame):
 def build_email_body(on_df: pd.DataFrame, off_df: pd.DataFrame) -> str:
     now = datetime.datetime.now().strftime("%d %B %Y at %H:%M")
 
-    lines = [
-        f"Bona Vacantia List Changes — {now}",
+  lines = [
+        f"BV Unclaimed Estates list changes detected — {today}.",
         "",
-        f"NEW entries (ON): {len(on_df)}",
-        f"REMOVED entries (OFF): {len(off_df)}",
+        f"  ✅  NEW entries (ON list):      {len(on_df)}",
+        f"  ❌  REMOVED entries (OFF list): {len(off_df)}",
         "",
     ]
 
-    def format_table(df, heading):
-        table_lines = [heading, "-" * len(heading)]
-        for _, r in df.iterrows():
-            table_lines.append(
-                f"{r.get('BV Reference','')} | "
-                f"{r.get('Forename','')} | "
-                f"{r.get('Surname','')} | "
-                f"{r.get('Date of Death','')} | "
-                f"{r.get('Place of Death','')}"
-            )
-        table_lines.append("")
-        return table_lines
+    if not on_df.empty and 'Surname' in on_df.columns:
+        lines.append("New entries (ON):")
+        for _, r in on_df.iterrows():
+            lines.append(f"  + {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
+        lines.append("")
 
-    if not on_df.empty:
-        lines.extend(format_table(on_df, "New Entries (ON)"))
+    if not off_df.empty and 'Surname' in off_df.columns:
+        lines.append("Removed entries (OFF):")
+        for _, r in off_df.iterrows():
+            lines.append(f"  - {r.get('Forename','')} {r.get('Surname','')}  [{r.get('BV Reference','')}]")
+        lines.append("")
 
-    if not off_df.empty:
-        lines.extend(format_table(off_df, "Removed Entries (OFF)"))
+    lines.append("Full details are in the attached Excel file.")
+    body = "\n".join(lines)
+
 
     return "\n".join(lines)
 

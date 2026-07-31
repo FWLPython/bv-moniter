@@ -1912,3 +1912,9 @@
 [2026-07-31 09:55:51] Changes found — building and sending email...
 [2026-07-31 09:55:53] Email sent to admin@family-wise.co.uk via SMTP2GO (SSL 465)
 [2026-07-31 09:55:53] All done ✅
+[2026-07-31 10:01:08] ── BV Monitor starting ──
+[2026-07-31 10:01:08] Finding download URL on gov.uk...
+[2026-07-31 10:01:10] Downloading: https://assets.publishing.service.gov.uk/media/6a6c7058cceb23e86789777b/UnclaimedEstatesList.csv
+[2026-07-31 10:01:11] Downloaded 5501 entries.
+[2026-07-31 10:01:11] Comparison done — ON: 0, OFF: 0
+[2026-07-31 10:01:11] No changes detected.

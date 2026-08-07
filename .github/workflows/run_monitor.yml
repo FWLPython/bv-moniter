@@ -1,35 +1,32 @@
 name: BV Monitor
-
 on:
   schedule:
     - cron: "*/5 7-16 * * 1-5"   # every 5 minutes, 8am-6pm UK time (7am-4pm UTC), Mon-Fri
   workflow_dispatch: {}      # lets you trigger it manually from the Actions tab too
   repository_dispatch:
     types: [run-bv-monitor]  # triggered externally by cron-job.org / EasyCron for reliable timing
-
 concurrency:
   group: bv-monitor
   cancel-in-progress: false   # let the current run finish rather than killing it mid-way
-
 jobs:
   check-bv-list:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install dependencies
         run: pip install requests pandas openpyxl
-
       - name: Run BV monitor
+        env:
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          # EMAIL_FROM: ${{ secrets.EMAIL_FROM }}   # optional — script falls back to admin@family-wise.co.uk
         run: python bv_monitor.py
-
       - name: Commit updated saved list and log
         run: |
           git config --global user.name "bv-monitor-bot"

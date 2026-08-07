@@ -31,11 +31,16 @@ SMTP_HOST     = "mail.smtp2go.com"
 SMTP_PORT_SSL = 465    # SSL
 SMTP_PORT_TLS = 2525   # STARTTLS
 
-SMTP_USERNAME = "FamilyWiseBVLIST"
-SMTP_PASSWORD = "0LGj2guAb1rcYLPJ1skgMV55"
+# Secrets — pulled from environment variables (set as GitHub Actions
+# repo/org secrets). Never hardcode these in the script.
+SMTP_USERNAME = os.environ["SMTP_USERNAME"]
+SMTP_PASSWORD = os.environ["SMTP_PASSWORD"]
 
-EMAIL_FROM = "admin@family-wise.co.uk"
-EMAIL_TO   = "admin@family-wise.co.uk"
+# Email addresses — also environment-driven so they aren't tied to the
+# code and can be changed without a commit. EMAIL_FROM falls back to a
+# sensible default if not set; EMAIL_TO is required.
+EMAIL_FROM = os.environ.get("EMAIL_FROM", "admin@family-wise.co.uk")
+EMAIL_TO   = os.environ["EMAIL_TO"]
 
 SCRIPT_DIR      = Path(__file__).parent
 SAVED_LIST_PATH = SCRIPT_DIR / "bv_saved_list.csv"
@@ -370,6 +375,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
 

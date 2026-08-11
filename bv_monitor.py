@@ -39,7 +39,7 @@ SMTP_PASSWORD = os.environ["SMTP_PASSWORD"]
 # Email addresses — also environment-driven so they aren't tied to the
 # code and can be changed without a commit. EMAIL_FROM falls back to a
 # sensible default if not set; EMAIL_TO is required.
-EMAIL_FROM = os.environ.get("EMAIL_FROM", "admin@family-wise.co.uk")
+EMAIL_FROM = os.environ.get("EMAIL_FROM", "bv@family-wise.co.uk")
 EMAIL_TO   = os.environ["EMAIL_TO"]
 
 SCRIPT_DIR      = Path(__file__).parent

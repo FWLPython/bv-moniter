@@ -5,11 +5,19 @@ Runs on a schedule (e.g. GitHub Actions). Downloads the latest BV
 Unclaimed Estates list from gov.uk, compares it to the previously
 saved version, builds a styled ON/OFF Excel report, and emails it
 via SMTP2GO — but ONLY if something changed.
+
+Test mode:
+    python bv_monitor.py --test-email
+Sends a simple test email using the same SMTP2GO config, skipping
+the gov.uk download/compare/report steps entirely. Useful for
+confirming SMTP auth and delivery work without waiting for a real
+list change.
 """
 
 import os
 import re
 import ssl
+import sys
 import smtplib
 import datetime
 import requests
@@ -330,6 +338,59 @@ def send_email(on_df: pd.DataFrame, off_df: pd.DataFrame, xlsx_path: Path):
             server.sendmail(EMAIL_FROM, recipients, msg.as_string())
         log(f"Email sent to {EMAIL_TO} via SMTP2GO (TLS 2525)")
 
+
+def send_test_email():
+    """Sends a simple test email using the same SMTP2GO config and
+    fallback logic as send_email(), without touching the gov.uk
+    download or comparison logic. Run with: python bv_monitor.py --test-email
+    """
+    today   = datetime.date.today().strftime("%d %B %Y")
+    subject = f"BV Monitor — Test Email ({today})"
+
+    msg            = MIMEMultipart("alternative")
+    msg["From"]    = EMAIL_FROM
+    msg["To"]      = EMAIL_TO
+    msg["Subject"] = subject
+
+    plain = (
+        "This is a test email from bv_monitor.py.\n\n"
+        f"Sent: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+        f"From: {EMAIL_FROM}\n"
+        f"To:   {EMAIL_TO}\n\n"
+        "If you're reading this, SMTP2GO authentication and delivery "
+        "are both working correctly."
+    )
+    html = f"""\
+<html><body style="font-family:Arial, sans-serif;">
+  <h2 style="color:#2E7D32;">BV Monitor — Test Email ✅</h2>
+  <p>This is a test email from <b>bv_monitor.py</b>.</p>
+  <p style="color:#666;font-size:13px;">
+    Sent: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}<br>
+    From: {EMAIL_FROM}<br>
+    To: {EMAIL_TO}
+  </p>
+  <p>If you're reading this, SMTP2GO authentication and delivery are both working correctly.</p>
+</body></html>
+"""
+    msg.attach(MIMEText(plain, "plain"))
+    msg.attach(MIMEText(html, "html"))
+
+    recipients = [addr.strip() for addr in EMAIL_TO.split(",") if addr.strip()]
+
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT_SSL, context=context, timeout=30) as server:
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(EMAIL_FROM, recipients, msg.as_string())
+        log(f"✅ Test email sent to {EMAIL_TO} via SMTP2GO (SSL 465)")
+    except Exception as ssl_err:
+        log(f"SSL (465) test send failed: {ssl_err}. Retrying with TLS (2525)...")
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT_TLS, timeout=30) as server:
+            server.starttls(context=ssl.create_default_context())
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(EMAIL_FROM, recipients, msg.as_string())
+        log(f"✅ Test email sent to {EMAIL_TO} via SMTP2GO (TLS 2525)")
+
 # ─────────────────────────────────────────────────────────────
 #  MAIN
 # ─────────────────────────────────────────────────────────────
@@ -374,5 +435,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if "--test-email" in sys.argv:
+        log("── Running in TEST EMAIL mode ──")
+        send_test_email()
+    else:
+        main()
 

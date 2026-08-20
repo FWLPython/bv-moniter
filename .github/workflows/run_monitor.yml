@@ -2,7 +2,12 @@ name: BV Monitor
 on:
   schedule:
     - cron: "*/5 7-16 * * 1-5"   # every 5 minutes, 8am-6pm UK time (7am-4pm UTC), Mon-Fri
-  workflow_dispatch: {}      # lets you trigger it manually from the Actions tab too
+  workflow_dispatch:
+    inputs:
+      test_email:
+        description: "Send a test email only (skip the BV list check)"
+        type: boolean
+        default: false
   repository_dispatch:
     types: [run-bv-monitor]  # triggered externally by cron-job.org / EasyCron for reliable timing
 concurrency:
@@ -26,8 +31,14 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           # EMAIL_FROM: ${{ secrets.EMAIL_FROM }}   # optional — script falls back to admin@family-wise.co.uk
-        run: python bv_monitor.py
+        run: |
+          if [ "${{ inputs.test_email }}" = "true" ]; then
+            python bv_monitor.py --test-email
+          else
+            python bv_monitor.py
+          fi
       - name: Commit updated saved list and log
+        if: ${{ inputs.test_email != true }}
         run: |
           git config --global user.name "bv-monitor-bot"
           git config --global user.email "bv-monitor-bot@users.noreply.github.com"

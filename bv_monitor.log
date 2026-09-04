@@ -56560,3 +56560,9 @@
 [2026-09-04 14:45:45] Sending email...
 [2026-09-04 14:45:46] Email sent to admin@family-wise.co.uk,cases@family-wise.co.uk,case-support@family-wise.co.uk,kirsty@family-wise.co.uk via SMTP2GO (SSL 465)
 [2026-09-04 14:45:46] All done ✅
+[2026-09-04 14:50:47] ── BV Monitor starting ──
+[2026-09-04 14:50:47] Finding download URL on gov.uk...
+[2026-09-04 14:50:48] Downloading: https://assets.publishing.service.gov.uk/media/6a9ad939df4246cf45e46972/UnclaimedEstatesList.csv
+[2026-09-04 14:50:49] Downloaded 5486 entries.
+[2026-09-04 14:50:49] Comparison done — ON: 0, OFF: 0
+[2026-09-04 14:50:49] No changes detected. No email sent.

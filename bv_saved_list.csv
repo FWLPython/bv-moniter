@@ -448,7 +448,7 @@ BV976591/1,Margaret Hall,Boydell,16/09/1997,Colwyn Bay  Conwy
 BV22002763/1,Anna-Maria,Boyle,01/11/2009,Clapham  London SW4
 BV22400817/1,Gary Francis,Boyle,28/10/2023,Portsmouth  Hampshire
 BV22405829/1,James Kerr,Boyle,12/02/2024,Clacton-on-Sea  Essex
-BV2013502/1,Maureen,Boyle,04/05/2001,
+BV2013502/1,Maureen,Boyle,04/05/2001,Watford  Hertfordshire
 BV2087328/1,William,Boyle,16/09/2008,Derby  Derbyshire
 BV2064552/1,Winifred,Boyne,13/03/2006,Maids Moreton  Buckinghamshire
 ESTA26#3124/1,Ian George,Bozzett,11/10/2025,Colchester  Essex
@@ -2834,6 +2834,7 @@ BV2065367/1,Waltraut Grete,Long,08/05/2006,Forest Hill London SE23
 BV2040849/1,Doris,Longman,28/12/2003,Walthamstow  London E17
 BV21300554/1,Christopher Anthony,Longstaff,08/11/2012,Darlington  Co Durham
 BV22110157/1,Christopher,Lonono,05/06/2021,Lincoln  Lincolnshire
+ESTA26#24070/1,Joyce,Loomes,21/02/2025,Enfield  Middlesex
 BV22006383/1,Jose Maria Fernandez,Lopez,03/11/1994,Kensington  London SW5
 BV22206569/1,Maria Mercedes,Lopez Brandariz,27/03/2019,Westminster  London W2
 BV22402042/1,Carmen,Lopez Cacheiro,24/09/2022,Southwark  London SE17
@@ -3316,7 +3317,6 @@ BV2012401/1,Elizabeth Bridget,Morgan,17/03/2001,Taunton  Somerset
 BV972484/1,Ellen,Morgan,11/12/1996,Hampstead London  NW3.
 BV21902443/1,Fevziye,Morgan,19/12/2007,Stoke Newington  London
 BV21517452/1,Frank,Morgan,29/09/2015,Cheam  Surrey
-ESTA26#10624/1,Trevor Kenneth,Morgan,28/01/2026,Smethwick  West Midlands
 BV22006637/1,Valerie Maureen Winifred,Morgan,17/02/2020,Bristol
 BV21210119/1,Nora,Moriarty,09/01/2012,Gillingham  Kent
 BV21507974/1,Mario,Morisco,15/03/2015,Westminster  London W2
@@ -3627,6 +3627,7 @@ BV21200170/1,Stephen Alexander,Orr,02/11/2010,Barnsley  South Yorkshire
 ESTA26#11428/1,Robert Michael,Orrell,13/04/2021,Birmingham  West Midlands
 BV20911088/1,Tex,Orrico,28/09/2009,Marylebone  London W1
 BV21503245/1,Cedric,Osborne,15/01/2012,Hackney  London E9
+ESTA26#24068/1,Geoffrey John,Osborne,08/12/2015,Bromley  Kent
 BV21202956/1,Barry Keith,Osbourne,05/04/2002,Newham  London E16
 BV2075886/1,Gwenice,Osbourne,13/01/1997,Muswell Hill London N10
 BV21415863/1,Anne,O'Shea,28/05/2014,Barnstaple  Devon
@@ -3712,6 +3713,7 @@ BV995682/1,Robert Bernard,Parker,15/10/1999,Guildford  Surrey
 BV22510987/1,Susan,Parker,03/09/2024,Welwyn Garden City  Hertfordshire
 BV990406/1,Violet Esther,Parker,04/01/1999,Swaffham  Norfolk
 BV21721786/1,William,Parker,15/07/2017,Hackney  London E8
+ESTA26#24032/1,Adrian,Parkes,12/03/2025,Bridlington  East Riding of Yorkshire
 BV22201927/1,David,Parkes,07/06/2020,Daventry  Northamptonshire
 BV21620868/1,Eveleen Patricia,Parkes,02/03/2016,Felixstowe  Suffolk
 BV21108375/1,Colin Charles,Parkhouse,23/06/2011,Bristol
@@ -3855,7 +3857,6 @@ ESTA25#3583/1,Elizabeth Beatrice Valerie,Porter,12/12/2013,Whitechapel  London E
 BV21306226/1,Betty,Potter,03/12/2005,Guildford  Surrey
 BV21804882/1,Raymond,Potter,24/12/2017,Frome  Somerset
 BV2065446/1,Adrian Warwick,Potts,10/06/2006,whitechapel  London E1
-ESTA26#18817/1,Clive,Potts,26/05/2022,West Byfleet  Surrey
 BV2005242/1,John,Potts,23/07/2000,Sunderland  Tyne & Wear
 BV22508299/1,Richard Hugh,Potts,13/03/2025,Alnwick  Northumberland
 BV22002178/1,James Anthony,Pounal,21/01/2008,Finsbury Park  London N7
@@ -4038,7 +4039,6 @@ BV2035886/1,Peter John,Richards,13/08/2003,Walworth  London SE17
 BV21918865/1,William George,Richards,06/07/2010,Lewisham  London SE13
 BV2021018/1,Edward,Richardson,12/11/2001,Huddersfield  West Yorlshire
 BV2044261/1,Ernest,Richardson,27/06/2002,
-ESTA26#17470/1,Florence,Richardson,10/07/2004,Nottingham  Nottinghamshire
 BV2000626/1,Kenneth George,Richardson,27/11/1999,Westminster  London SW1
 ESTA26#17468/1,Lucille,Richardson,13/08/2007,Nottingham  Nottinghamshire
 BV22503669/1,Michael,Richardson,15/08/2024,Camden  London NW5
@@ -4962,7 +4962,6 @@ BV22318256/1,Peter Ivanov,Vasilev,11/12/2021,Winson Green  Warwickshire
 BV976141/1,Mahinder Singh,Vason,16/10/1997,Croydon  Surrey
 BV2094507/1,Thomas,Vaughan,04/02/2009,Southampton Hampshire
 BV21000281/1,William,Vaughan,13/08/2009,Chepstow Monmouthshire
-ESTA26#20426/1,Jean,Vayro,02/06/2022,Durham City  County Durham
 BV2075899/1,Jose Chacon,Vazquez,23/07/2006,Leicester  Leicestershire
 BV22109758/1,Lenita,Vecchia,02/04/2020,Clapham  London SW4
 BV2065491/1,Michael,Veder,14/08/2006,Hemel Hempstead  Herts
@@ -5256,7 +5255,6 @@ ESTA25#3600/1,Hurbert John,Williams,18/08/2025,Neath  West Glamorgan
 BV22301577/1,Jeanette Violet,Williams,07/07/2022,Hayes  Middlesex
 BV22107120/1,John,Williams,22/07/2020,Denmark Hill  London SE5
 BV2025167/1,John Jacob,Williams,11/05/1997,Ruthin Denbighshire
-ESTA26#14921/1,Karen Mary,Williams,25/04/2026,Sutton Coldfield  West Midlands
 BV22303490/1,Kevin Leslie,Williams,04/09/2020,Hereford  Herefordshire
 BV2061949/1,Leslie Albert,Williams,08/11/2003,Southampton Hampshire
 BV2098575/1,Lionel Harris,Williams,22/09/2009,Cardiff  Glamorgan

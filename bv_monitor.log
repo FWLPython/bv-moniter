@@ -159967,3 +159967,12 @@
 [2026-11-05 07:55:39] Downloaded 5454 entries.
 [2026-11-05 07:55:39] Comparison done — ON: 0, OFF: 0
 [2026-11-05 07:55:39] No changes detected. No email sent.
+[2026-11-05 08:01:12] ── BV Monitor starting ──
+[2026-11-05 08:01:12] Finding download URL on gov.uk...
+[2026-11-05 08:01:17] Downloading: https://assets.publishing.service.gov.uk/media/6aec364dd548048bba0e7d79/UnclaimedEstatesList.csv
+[2026-11-05 08:01:19] Downloaded 5449 entries.
+[2026-11-05 08:01:19] Comparison done — ON: 8, OFF: 13
+[2026-11-05 08:01:19] Changes found — building Excel report...
+[2026-11-05 08:01:19] Sending email...
+[2026-11-05 08:01:20] Email sent to admin@family-wise.co.uk,kirsty@family-wise.co.uk,case-support@family-wise.co.uk,cases@family-wise.co.uk,subcontractors@family-wise.co.uk via SMTP2GO (SSL 465)
+[2026-11-05 08:01:20] All done ✅

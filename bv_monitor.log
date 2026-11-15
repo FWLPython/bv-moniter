@@ -177751,3 +177751,9 @@
 [2026-11-15 15:05:41] Downloaded 5472 entries.
 [2026-11-15 15:05:41] Comparison done — ON: 0, OFF: 0
 [2026-11-15 15:05:41] No changes detected. No email sent.
+[2026-11-15 15:10:52] ── BV Monitor starting ──
+[2026-11-15 15:10:52] Finding download URL on gov.uk...
+[2026-11-15 15:10:53] Downloading: https://assets.publishing.service.gov.uk/media/6af5ebfc0fe4c16833740534/UnclaimedEstatesList.csv
+[2026-11-15 15:10:54] Downloaded 5472 entries.
+[2026-11-15 15:10:54] Comparison done — ON: 0, OFF: 0
+[2026-11-15 15:10:54] No changes detected. No email sent.
